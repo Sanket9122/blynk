@@ -11,12 +11,14 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("MongoDB connection error:", err));
 
 // Schema
-const dataSchema = new mongoose.Schema({
-  device: String,
-  datastream: String,
-  value: String,
-  time: String
-});
+// const dataSchema = new mongoose.Schema({
+//   device: String,
+//   datastream: String,
+//   value: String,
+//   time: String
+// });
+const dataSchema = new mongoose.Schema({}, { strict: false });
+
 const BlynkData = mongoose.model('BlynkData', dataSchema);
 
 // Middleware
