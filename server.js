@@ -22,6 +22,7 @@ const dataSchema = new mongoose.Schema({}, { strict: false });
 const BlynkData = mongoose.model('BlynkData', dataSchema);
 
 // Middleware
+app.use(express.text());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,10 +33,10 @@ app.post('/blynk-data', async (req, res) => {
     console.log("Data received:", req.body);
     const newData = new BlynkData(req.body);
     await newData.save();
-    res.status(200).send("Data saved successfully");
+    res.status(200).json({status :"ok"});
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error saving data");
+    res.status(500).json({status : "error"});
   }
 });
 
