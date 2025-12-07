@@ -23,6 +23,8 @@ const BlynkData = mongoose.model('BlynkData', dataSchema);
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // Webhook route
 app.post('/blynk-data', async (req, res) => {
