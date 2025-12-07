@@ -22,29 +22,40 @@ app.use(express.json());                           // for JSON
 // Webhook route
 app.post('/blynk-data', async (req, res) => {
   try {
-    console.log("Headers:", req.headers);
     console.log("Raw body:", req.body);
 
     let payload = req.body;
 
-    // If payload is string, try parsing JSON
+    // If payload is string, split by comma
     if (typeof payload === 'string') {
-      try {
-        payload = JSON.parse(payload);
-      } catch {
-        console.log("Payload is not JSON, using raw/form data");
-      }
+      // Remove quotes and split
+      const parts = payload.split(',').map(p => p.replace(/"/g, '').trim());
+
+      // Map CSV parts to meaningful keys
+      payload = {
+        device_id: parts[0],
+        device_productName: parts[1],
+        device_dateCreated: parts[2],
+        device_name: parts[3],
+        device_dataStreamId: parts[4],
+        device_dataStreamName: parts[5],
+        device_dataStream_X: parts[6],
+        timestamp_unix: parts[7]
+      };
     }
+
+    console.log("Parsed payload:", payload);
 
     const newData = new BlynkData(payload);
     await newData.save();
 
-    res.sendStatus(200);   // Always return 200 OK
+    res.sendStatus(200);
   } catch (err) {
     console.error("Error saving data:", err);
     res.sendStatus(500);
   }
 });
+
 
 // Test route
 app.get('/', (req, res) => {
